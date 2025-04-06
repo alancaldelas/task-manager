@@ -54,6 +54,28 @@ func create_task() []Task {
   return tasks
 }
 
+func write_tasks(t []Task) {
+  fmt.Println("Writing tasks...")
+  t_fname := "tasks.txt"
+
+  //Create a new file if it doesn't exist, if it does exist just append
+  file,err := os.OpenFile(t_fname, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+  if err != nil {
+    fmt.Println("Failed to create file...")
+  }
+
+  defer file.Close()
+
+  // Write the tasks into the file
+  for _,task := range t {
+    _,err := file.WriteString(task.Name)
+    if err != nil {
+      fmt.Println("error writing to file")
+    }
+  }
+}
+
 // User input retrieves a user input for the main menu
 // A user can add, delete, list, and edit existing tasks.
 func user_input() string{
@@ -74,6 +96,7 @@ func user_input() string{
   case "a":
     option = "Add a new task"
     tasks = create_task()
+    write_tasks(tasks)
   case "d":
     option = "Delete a task"
   case "e":
